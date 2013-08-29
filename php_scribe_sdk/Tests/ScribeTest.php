@@ -13,7 +13,7 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
 			"uname"=>"zhangzhan"
 			),
 		"ip"    =>"127.0.0.1",
-		"time"  =>microtime(true),//optional 
+		"time"  =>microtime(true),//optional src
        	);
        $this->assertTrue($scribe->log($log));
    }

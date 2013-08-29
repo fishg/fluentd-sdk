@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="name-of-project" default="build">
+    <!-- Start 自定义区域 -->
+    <property description="源码目录" name="src" value="${basedir}/src"/>
+    <property description="phpunit测试用例目录" name="test" value="${basedir}/Tests"/>
+    <property description="构建时的输出目录" name="builddir" value="${basedir}/build"/>
+    <!-- END 自定义区域 -->
+    
+    <!-- init -->
+        <mkdir dir="${builddir}" description="建立构建目录"/>
+        <delete dir="${builddir}/tmp"/>
+        <exec executable="git" failonerror="true">
+            <arg value="clone"/>
+            <arg value="git@git.zbjdev.com:open-platform/jenkins-php-template.git"/>
+            <arg path="${builddir}/tmp"/>
+        </exec>
+        <copy filtering="true" todir="${builddir}" overwrite="true" failonerror="true">
+            <filterset>
+                <filter token="src" value="${src}"/>
+                <filter token="test" value="${test}"/>
+                <filter token="builddir" value="${builddir}"/>
+            </filterset>
+            <fileset dir="${builddir}/tmp/build"/>
+        </copy>
+        <delete dir="${builddir}/tmp"/>
+    <!-- end init -->
+
+    <import file="${builddir}/build-common.xml" as="common"/>
+    <target name="build" depends="common.build" description="全部构建"/>
+    <target name="t-clean" depends="common.cleanall" description="清理构建时遗留的文件"/>
+    <target name="t-prepare" depends="common.prepare" description="在builddir下建立必要的文件夹"/>
+    <target name="t-lint" depends="common.lint" description="语法检查"/>
+    <target name="t-phpmd" depends="common.phpmd" description="代码缺陷静态分析"/>
+    <target name="t-phpunit" depends="common.phpunit" description="执行单元测试"/>
+
+</project>
