@@ -10,14 +10,16 @@ class Scribe{
 	private $isopen = false;
 	private $default = array(
 
-			'category' => [true],
+			'category' => [false,'default'],
 	       	'status'   => [false,0,'int'],
 			'level'    => [false,0,'int'],
-			'userid'   => [false,0,'int'],
-			'service'  => [true],
-			'log'      => [true],
-			'ip'       => [true],
+			'service'  => [false,'0'],
+			'userInfo' => [false,array()],
+			'log'      => [false,array()],
+			'clientIP' => [false,''],
 			'time'     => [false],
+			'serverIP' => [false],
+			'machine'  => [false],
        	
 		);
 
@@ -26,23 +28,25 @@ class Scribe{
 		require_once $GLOBALS['THRIFT_ROOT'] . '/transport/TSocket.php';
 		require_once $GLOBALS['THRIFT_ROOT'] . '/transport/TFramedTransport.php';
 		require_once $GLOBALS['THRIFT_ROOT'] . '/protocol/TBinaryProtocol.php';
+		require_once dirname(__FILE__) . '/Utils.class.php';
 		$this->host = $host;
 		$this->port = $port;
-		$this->default['time'] = [false,$this->currentMicroTime()];
-		if(php_sapi_name() != "cli") $this->default['ip']=[false,$this->get_client_ip()];
+		$this->default['time'] = [false,Utils::currentMicroTime(true)];
+		if(php_sapi_name() != "cli") $this->default['clientIP']=[false,Utils::get_client_ip()];
+		$this->default['serverIP'] = [false,Utils::get_server_ip()];
+		$this->default['machine'] = [false,php_uname('n')];
 	}
 
-	public function log($log){
-		if($uuid = $this->add($log) && $this->commit() && $this->close())
+	public function log($log,$is_append_request_info=false){
+		if($uuid = $this->add($log,$is_append_request_info) && $this->commit() && $this->close())
 			return $uuid;
 	}
 
-	public function add($log){
+	public function add($log,$is_append_request_info=false){
 		if(!$this->fieldCheck($log)) return false;
 		$category = $log['category'];
-		if(empty($log['uuid'])) $log['uuid'] = $this->createUUID();
-		$log['machine'] = php_uname('n');
-		//Todo: 判断 IP 是否需要自动获取
+		if(empty($log['uuid'])) $log['uuid'] = Utils::createUUID();
+		if($is_append_request_info||$log['level']>0 ) $log['userRequest'] = Utils::serializeRequestInfo();
 		$messages = array(
 			'category'  => $category,
 			'messages'  => json_encode($log),
@@ -84,28 +88,6 @@ class Scribe{
 			if(isset($v[2])&&$v[2]=='int')  $log[$k] = intval($log[$k]);
 		}
 		return true;
-	}
-
-	public function createUUID(){
-	    return php_uname('n').'-'.$this->currentMicroTime().'-'.rand(10000,99999);
-	}
-	public function get_client_ip() {
-	    if(getenv('HTTP_CLIENT_IP')){
-	        $client_ip = getenv('HTTP_CLIENT_IP');
-	    } elseif(getenv('HTTP_X_FORWARDED_FOR')) {
-	        $client_ip = getenv('HTTP_X_FORWARDED_FOR');
-	    } elseif(getenv('REMOTE_ADDR')) {
-	        $client_ip = getenv('REMOTE_ADDR');
-	    } else {
-	        $client_ip = $_SERVER['REMOTE_ADDR'];
-	    }
-	    return $client_ip;
-	}
-	public function currentMicroTime()
-	{
-		$time = explode ( " ", microtime () );
-		$time = $time [1] . ($time [0] * 100000000);
-		return $time;
 	}
 
 }
