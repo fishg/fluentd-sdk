@@ -1,5 +1,5 @@
 <?php
-require dirname(__FILE__)."/scribe.class.php";
+require dirname(__FILE__)."/../Scribe.class.php";
 class ScribeTest extends PHPUnit_Framework_TestCase {
    public function  test(){
        $scribe = new Scribe('192.168.5.103','1463');
@@ -15,7 +15,7 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
 		"ip"    =>"127.0.0.1",
 		"time"  =>microtime(true),//optional 
        	);
-
+       $this->assertTrue($scribe->log($log));
    }
 }
 ?>

@@ -28,8 +28,8 @@ class Scribe{
 		require_once $GLOBALS['THRIFT_ROOT'] . '/protocol/TBinaryProtocol.php';
 		$this->host = $host;
 		$this->port = $port;
-		$this->default['time'] = [fale,$this->currentMicroTime()];
-		if(!php_sapi_name() != "cli") $this->default['ip']=[fale,$this->get_client_ip()];
+		$this->default['time'] = [false,$this->currentMicroTime()];
+		if(php_sapi_name() != "cli") $this->default['ip']=[false,$this->get_client_ip()];
 	}
 
 	public function log($log){
