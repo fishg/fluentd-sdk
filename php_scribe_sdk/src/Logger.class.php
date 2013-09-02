@@ -24,7 +24,7 @@ class Logger{
 			'user_info' => array(false,array()),
 			'logmsg'      => array(false,array()),
 			'client_ip' => array(false,''),
-			'time'     => array(false),
+			'revtime'     => array(false),
 			'server_ip' => array(false),
 			'machine'  => array(false),
        	
@@ -61,9 +61,9 @@ class Logger{
 
 	public function add($log,$is_append_request_info=false){
 		if(empty($log['uuid'])) $log['uuid'] = Utils::createUUID();
-		$this->default['time']               = array(false,time());
+		$this->default['revtime']            = array(false,time());
 		if($is_append_request_info||$log['level']>0 )
-			$log['user_request']              = Utils::serializeRequestInfo();
+			$log['user_request']             = Utils::serializeRequestInfo();
 		if(!$this->fieldCheck($log))
 			return false;
 		$this->messages[] = $log;
