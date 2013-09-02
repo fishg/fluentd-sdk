@@ -35,12 +35,11 @@ class Utils{
 		return $is_ms ? intval($time/10000):$time;
 	}
 	public static function serializeRequestInfo(){
-		return json_encode(array(
+		return array(
 				"get"    => $_GET,
 				"post"   => $_POST,
 				"cookie" => $_COOKIE,
 				"server" =>$_SERVER
-				)
-			);
+				);
 	}
 }
