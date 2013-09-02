@@ -8,11 +8,11 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
        	"status"=>0,
 		"level" =>0,
 		"service"=>"fluentd.php.sdk",
-		"userInfo" => array(
+		"user_info" => array(
 			"id"=>123,
 			"name"=>"王大爷2",
 			),
-		"log"=>array(
+		"logmsg"=>array(
 			"uname"=>"zhangzhan"
 			),
 		//"clientIP"    =>"127.0.0.1",

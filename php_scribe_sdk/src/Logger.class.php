@@ -21,11 +21,11 @@ class Logger{
 	       	'status'   => array(false,0,'int'),
 			'level'    => array(false,0,'int'),
 			'service'  => array(false,'0'),
-			'userInfo' => array(false,array()),
-			'log'      => array(false,array()),
-			'clientIP' => array(false,''),
+			'user_info' => array(false,array()),
+			'logmsg'      => array(false,array()),
+			'client_ip' => array(false,''),
 			'time'     => array(false),
-			'serverIP' => array(false),
+			'server_ip' => array(false),
 			'machine'  => array(false),
        	
 		);
@@ -42,8 +42,8 @@ class Logger{
 		$this->logger = new Fluent_Logger_FluentLogger($this->host,$this->port);
 
 		if(php_sapi_name() != "cli")
-			$this->default['clientIP']= array(false,Utils::get_client_ip());
-		$this->default['serverIP']    = array(false,Utils::get_server_ip());
+			$this->default['client_ip']= array(false,Utils::get_client_ip());
+		$this->default['server_ip']    = array(false,Utils::get_server_ip());
 		$this->default['machine']     = array(false,php_uname('n'));
 	}
 	/**
@@ -63,7 +63,7 @@ class Logger{
 		if(empty($log['uuid'])) $log['uuid'] = Utils::createUUID();
 		$this->default['time']               = array(false,time());
 		if($is_append_request_info||$log['level']>0 )
-			$log['userRequest']              = Utils::serializeRequestInfo();
+			$log['user_request']              = Utils::serializeRequestInfo();
 		if(!$this->fieldCheck($log))
 			return false;
 		$this->messages[] = $log;
