@@ -20,9 +20,9 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
        for($i=0;$i<200000;$i++){
        $uuid = $logger->log($log);
        if($uuid){
-           echo "commit success.uuid is:".$uuid."\n";
+           #echo "commit success.uuid is:".$uuid."\n";
 	   }else{
-	   	   echo "commit failed.msg is:".$logger->getErrorMsg()."\n";
+	   #	   echo "commit failed.msg is:".$logger->getErrorMsg()."\n";
 	   }
 	}
        $this->assertTrue($uuid!=false);
