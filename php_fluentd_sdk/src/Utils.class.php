@@ -12,7 +12,7 @@ class Utils{
 	    } elseif(getenv('REMOTE_ADDR')) {
 	        $client_ip = getenv('REMOTE_ADDR');
 	    } else {
-	        $client_ip = $_SERVER['REMOTE_ADDR'];
+	        $client_ip = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:"";
 	    }
 	    return $client_ip;
 	}
@@ -26,7 +26,7 @@ class Utils{
 	    } else {
 	        $server_ip = getenv('SERVER_ADDR');
 	    }
-	    return $server_ip;
+	    return empty($server_ip)?"":$server_ip;
 	}
 	public static function currentMicroTime($is_ms=false)
 	{
