@@ -17,6 +17,8 @@ class Logger{
 	private $err="";
 	private $commited=array();
 
+	public  $is_debug = false;
+
 	private $default = array(
 
 			//'tag' => array(false,'default'),
@@ -56,10 +58,13 @@ class Logger{
 	 * @return [type]                          [description]
 	 */
 	public function log($child_tag, $log, $is_append_request_info=false){
-		if(($uuid = $this->add($child_tag, $log, $is_append_request_info)) && $this->commit())
+		if(($uuid = $this->add($child_tag, $log, $is_append_request_info)) && $this->commit()){
+			if($this->is_debug) 'commit success,uuid:'.$uuid;
 			return $uuid;
-		else
+		}else{
+			if($this->is_debug) 'commit failed,msg:'.$this->err;
 			return false;
+		}
 	}
 
 	public function add($child_tag, $log,$is_append_request_info=false){
@@ -85,7 +90,7 @@ class Logger{
 					$this->err = 'msg commit failed:'.json_encode($v);
 					return false;
 				}else{
-					$this->commited[] = $v[0]['uuid'];
+					$this->commited[] = $v[1]['uuid'];
 				}
 			$this->_resetErrorMsg();
 		}catch (Exception $e) {

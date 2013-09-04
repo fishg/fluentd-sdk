@@ -30,7 +30,7 @@ class Utils{
 	}
 	public static function currentMicroTime($is_ms=false)
 	{
-		return date("YmdHis") . explode('.',(string)microtime(true))[1];
+		return date("YmdHis") . explode('.',explode(' ',(string)microtime())[0])[1];
 	}
 	public static function serializeRequestInfo(){
 		return array(

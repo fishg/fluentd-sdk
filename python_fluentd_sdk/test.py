@@ -7,8 +7,8 @@ __authors__ = [
 from zbj_logger import ZBJLogger
 
 tag        = 'projectname'
-tag_module = ''
-zbj_logger = ZBJLogger(tag,'192.168.5.103');
+tag_module = 'python.sdk'
+zbj_logger = ZBJLogger(tag,'10.211.55.4');
 
 i = 0;
 while i<20000:
