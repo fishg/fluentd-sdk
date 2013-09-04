@@ -30,9 +30,7 @@ class Utils{
 	}
 	public static function currentMicroTime($is_ms=false)
 	{
-		$time = explode ( " ", microtime () );
-		$time = $time [1] . ($time [0] * 100000000);
-		return $is_ms ? intval($time/10000):$time;
+		return date("YmdHis") . explode('.',(string)microtime(true))[1];
 	}
 	public static function serializeRequestInfo(){
 		return array(

@@ -11,13 +11,15 @@ require_once dirname(__FILE__).'/Fluentd/Autoloader.php';
 class Logger{
 	private $host = '127.0.0.1';
 	private $port = '24224';
+	private $tag  = 'default.php';
 	private $messages = array();
 	private $logger;
 	private $err="";
 	private $commited=array();
+
 	private $default = array(
 
-			'category' => array(false,'default'),
+			//'tag' => array(false,'default'),
 	       	'status'   => array(false,0,'int'),
 			'level'    => array(false,0,'int'),
 			'service'  => array(false,'0'),
@@ -34,10 +36,11 @@ class Logger{
 	 * @param string $host [fluentd服务器 IP 或者 hostname]
 	 * @param string $port [fluentd服务端口号]
 	 */
-	public function __construct($host = '127.0.0.1' , $port = '24224'){
+	public function __construct($tag,$host = '127.0.0.1' , $port = '24224'){
 		require_once dirname(__FILE__) . '/Utils.class.php';
 		$this->host = $host;
 		$this->port = $port;
+		$this->tag  = $tag;
 		Fluent_Autoloader::register();
 		$this->logger = new Fluent_Logger_FluentLogger($this->host,$this->port);
 
@@ -52,21 +55,21 @@ class Logger{
 	 * @param  boolean $is_append_request_info [description]
 	 * @return [type]                          [description]
 	 */
-	public function log($log,$is_append_request_info=false){
-		if(($uuid = $this->add($log,$is_append_request_info)) && $this->commit())
+	public function log($child_tag, $log, $is_append_request_info=false){
+		if(($uuid = $this->add($child_tag, $log, $is_append_request_info)) && $this->commit())
 			return $uuid;
 		else
 			return false;
 	}
 
-	public function add($log,$is_append_request_info=false){
+	public function add($child_tag, $log,$is_append_request_info=false){
 		if(empty($log['uuid'])) $log['uuid'] = Utils::createUUID();
 		$this->default['logtime']            = array(false,time());
 		if($is_append_request_info||$log['level']>0 )
 			$log['user_request']             = Utils::serializeRequestInfo();
 		if(!$this->fieldCheck($log))
 			return false;
-		$this->messages[] = $log;
+		$this->messages[] = array($child_tag, $log);
 		$this->_resetErrorMsg();
 		return $log['uuid'];
 	}
@@ -78,11 +81,11 @@ class Logger{
 		}
 		try {
 			foreach($this->messages as $v)
-				if(!$this->logger->post($v['category'],$v)){
+				if(!$this->logger->post($this->tag.'.'.$v[0],$v[1])){
 					$this->err = 'msg commit failed:'.json_encode($v);
 					return false;
 				}else{
-					$this->commited[] = $v['uuid'];
+					$this->commited[] = $v[0]['uuid'];
 				}
 			$this->_resetErrorMsg();
 		}catch (Exception $e) {

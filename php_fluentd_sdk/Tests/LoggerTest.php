@@ -2,15 +2,16 @@
 require dirname(__FILE__)."/../src/Logger.class.php";
 class ScribeTest extends PHPUnit_Framework_TestCase {
    public function  testLog(){
-       $logger = new Logger('10.211.55.6','24224');
+   	   $tag        = 'fluentd';
+   	   $tag_module = 'unittest.php';
+       $logger = new Logger($tag,'192.168.5.103','24224');
        $log = array(
-       	"category"=>"fluentd.unittest",
        	"status"=>0,
 		"level" =>0,
 		"service"=>"fluentd.php.sdk",
 		"user_info" => array(
 			"id"=>123,
-			"name"=>"王大爷2",
+			"name"=>"王大爷2php",
 			),
 		"logmsg"=>array(
 			"uname"=>"zhangzhan"
@@ -18,7 +19,7 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
 		//"clientIP"    =>"127.0.0.1",
        	);
        for($i=0;$i<200000;$i++){
-       $uuid = $logger->log($log);
+       $uuid = $logger->log($tag_module, $log);
        if($uuid){
            #echo "commit success.uuid is:".$uuid."\n";
 	   }else{
