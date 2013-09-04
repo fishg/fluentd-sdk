@@ -29,4 +29,3 @@ class ScribeTest extends PHPUnit_Framework_TestCase {
        $this->assertTrue($uuid!=false);
    }
 }
-?>

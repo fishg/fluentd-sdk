@@ -52,10 +52,25 @@ class Logger{
 		$this->default['machine']     = array(false,php_uname('n'));
 	}
 	/**
-	 * [log description]
-	 * @param  [type]  $log                    [description]
-	 * @param  boolean $is_append_request_info [description]
-	 * @return [type]                          [description]
+	 * log
+	 * 单条日志记录发送
+	 * @param  String  $child_tag              子分类(模块标识),比如: user.login
+	 * @param  String  $log                    关联数组,包含日志具体内容,格式:
+	 * array(
+	 * "status"=>0,                   //整数,操作状态:0表示没有异常,其他值表示异常
+	 * "level" =>0,                   //整数,对应各种日志级别,
+	 *                                //基本日志级别:0 info级别,10 warning级别,20 error级别
+	 * "service"=>"test",             //服务标识,比如登陆功能:login
+	 * "user_info" => array(          //用户信息,自定义字段
+	 * 	"id"=>123,
+	 * 	"name"=>"王大爷2php", 
+	 * ),
+	 * "logmsg"=>array(                //日志主体内容,字段自定义
+	 * 	"uname"=>"zhangzhan"
+	 * ),
+	 * );
+	 * @param  boolean $is_append_request_info 是否同时发送用户请求信息,包含get/post/cookie/server
+	 * @return String or false                 成功,返回日志唯一id;失败,返回false
 	 */
 	public function log($child_tag, $log, $is_append_request_info=false){
 		if(($uuid = $this->add($child_tag, $log, $is_append_request_info)) && $this->commit()){
