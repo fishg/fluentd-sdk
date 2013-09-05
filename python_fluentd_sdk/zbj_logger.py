@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 # 
 # Copyright 2013 zhubajie.com.
 # This script send log data to Fluentd-server.
